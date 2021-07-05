@@ -1,0 +1,10 @@
+---
+- name: Retrieve the file
+  hosts: appserver
+  tasks:
+    - name: Retrieve the .csv file
+      ansible.builtin.fetch:
+        src: /home/julia/oracle_client/gathered_data.csv
+        dest: /tmp/
+        flat: yes
+

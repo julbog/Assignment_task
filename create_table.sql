@@ -1,0 +1,16 @@
+DECLARE
+table_count NUMBER;
+
+BEGIN
+SELECT count(*) INTO table_count FROM user_tables WHERE table_name = 'SWED_TEST';
+IF(table_count <= 0)
+THEN
+EXECUTE IMMEDIATE 'CREATE TABLE SWED_TEST
+   (ID NUMBER PRIMARY KEY,
+   CREATION_DATE DATE, 
+  MESSAGE VARCHAR2(100 BYTE))';
+END IF;
+END;
+/
+EXIT;
+

@@ -1,0 +1,33 @@
+---
+- name: Execute sql scripts
+  hosts: appserver
+  tasks:
+    - name: Set local variables
+      set_fact: 
+        connection_string="(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(Host=23.101.60.209)(Port=1521))(CONNECT_DATA=(SERVICE_NAME=sweddb)))"
+        scripts_directory="/home/julia/Downloads/"
+        test_user="TEST"
+        test_pwd="TEST"
+
+    - name: Transfer scripts on app server
+      copy: src={{ scripts_directory }}{{ item.script_name }} dest={{ item.dest }} mode=0777
+      with_items:
+      - { script_name: 'create_schema.sql', dest: '/tmp' }
+      - { script_name: 'create_table.sql', dest: '/tmp' }
+      - { script_name: 'create_procedure_generating_data.sql', dest: '/tmp' }
+      - { script_name: 'generate_data.sql', dest: '/tmp' }
+      - { script_name: 'retrieve_subset.sql', dest: '/tmp' }
+    
+    - name: Create schema
+      command: sqlplus "{{ oracle_username }}/{{ oracle_pwd }}@{{ connection_string }} as sysdba" @/tmp/create_schema.sql
+      
+    - name: Execute generation scripts using sqlplus
+      command: sqlplus "{{ test_user }}/{{ test_pwd }}@{{ connection_string }}" @/tmp/{{ item.script_name }}
+      with_items:
+      - { script_name: 'create_table.sql' }
+      - { script_name: 'create_procedure_generating_data.sql' }
+      - { script_name: 'generate_data.sql' }
+      - { script_name: 'retrieve_subset.sql' }
+      environment:
+        PATH: /home/julia/oracle_client/instantclient_18_5:$PATH
+        LD_LIBRARY_PATH: /home/julia/oracle_client/instantclient_18_5:$LD_LIBRARY_PATH

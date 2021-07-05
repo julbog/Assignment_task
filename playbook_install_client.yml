@@ -1,0 +1,21 @@
+---
+- name: Install Oracle client
+  hosts: appserver
+  remote_user: julia
+  tasks:
+   - name: Transfer instantclient-basic-linux zip
+     copy: src={{ item.src }} dest={{ item.dest }} mode=0777
+     with_items:
+      - { src: '/home/julia/Downloads/instantclient-basic-linux.x64-18.5.0.0.0dbru.zip', dest: '/tmp' }
+      - { src: '/home/julia/Downloads/instantclient-sqlplus-linux.x64-18.5.0.0.0dbru.zip', dest: '/tmp' }
+      
+   - name: Create oracle_client directory
+     file:
+        path: /home/julia/oracle_client
+        state: directory
+     
+   - name: Unzip files
+     unarchive: src={{ item.src }} dest={{ item.dest }} 
+     with_items:  
+      - { src: '/home/julia/Downloads/instantclient-basic-linux.x64-18.5.0.0.0dbru.zip', dest: '/home/julia/oracle_client' }
+      - { src: '/home/julia/Downloads/instantclient-sqlplus-linux.x64-18.5.0.0.0dbru.zip', dest: '/home/julia/oracle_client' }
