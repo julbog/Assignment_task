@@ -23,7 +23,7 @@ In my case I placed all files into /home/julia/Downloads on "Ansible Server".
  
 ## Run
 To run the solution you need to execute following commands from the folder where scripts are located:
-  1. ansible-playbook playbook_execute_scripts.yml
+  1. ansible-playbook playbook_install_client.yml
   2. ansible-playbook playbook_execute_scripts.yml --extra-vars "oracle_username=sys oracle_pwd=######"
   3. ansible-playbook playbook_retrieve_data.yml
     
